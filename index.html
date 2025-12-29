@@ -283,3 +283,32 @@
 <audio id="bellSound6" src="https://noproblo.com/wp-content/uploads/2020/03/bell.mp3"></audio>
 <audio id="morningSound6" src="https://noproblo.com/wp-content/uploads/2020/03/birds-singing.mp3" loop></audio> <audio id="nightSound6" src="https://www.soundjay.com/nature/sounds/campfire-1.mp3" loop></audio>
 <audio id="rainSound6" src="https://www.soundjay.com/nature/sounds/rain-07.mp3" loop></audio>
+
+function changeMode(mode) {
+        document.body.className = mode + '-mode';
+        stopAllMusic();
+        if (mode === 'rain') { startRain(); playMusic('rainSound6'); }
+        else { stopRain(); playMusic(mode + 'Sound6'); }
+    }
+
+    function playMusic(id) {
+        const music = document.getElementById(id);
+        if (!music) return;
+        currentMusic = music;
+        music.muted = isMuted;
+        music.volume = volumeSlider.value;
+        music.play().catch(() => {});
+    }
+
+    function stopAllMusic() {
+        ['morningSound6', 'nightSound6', 'rainSound6'].forEach(id => {
+            const m = document.getElementById(id);
+            if (m) { m.pause(); m.currentTime = 0; }
+        });
+    }
+
+    function startTimer() {
+        if (timerId) return;
+        if (currentMusic) currentMusic.play(); else changeMode('morning');
+        // ... (以下略)
+    }
