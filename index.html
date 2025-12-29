@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozy AI Focus Timer | Sound Control Edition</title>
+    <title>Cozy AI Focus Timer | achan555</title>
     <style>
         :root {
             --bg-color: #fdf6e3; 
@@ -46,67 +46,74 @@
             text-align: center; 
             padding: 40px; 
             z-index: 10;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
             border-radius: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            max-width: 450px;
             width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        h1 { font-weight: 300; letter-spacing: 3px; margin-bottom: 5px; font-size: 1.2rem; }
-        #message { font-style: italic; font-size: 1rem; height: 1.5rem; margin-bottom: 25px; color: var(--accent-color); }
-        #timer { font-size: 7rem; font-weight: 100; margin: 10px 0; font-variant-numeric: tabular-nums; }
-        
-        /* 音声コントロールパネル */
-        .audio-controls {
-            margin-bottom: 25px;
+        h1 { font-weight: 300; letter-spacing: 4px; margin-bottom: 5px; font-size: 1rem; text-transform: uppercase; }
+        #message { 
+            font-style: italic; 
+            font-size: 0.95rem; 
+            min-height: 3rem; 
+            margin: 20px 0; 
+            color: var(--accent-color); 
+            line-height: 1.4;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
-            background: rgba(0,0,0,0.05);
-            padding: 10px;
-            border-radius: 20px;
         }
-        #muteBtn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-color);
-        }
-        #volumeSlider {
-            cursor: pointer;
-            width: 100px;
+        #timer { font-size: 7.5rem; font-weight: 100; margin: 10px 0; font-variant-numeric: tabular-nums; }
+        
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        .buttons button, .mode-buttons button {
+        /* サウンドコントロールUI */
+        .audio-ui {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .audio-ui:hover { opacity: 1; }
+        #muteBtn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-color); padding: 0; }
+        #volumeSlider { cursor: pointer; width: 80px; accent-color: var(--text-color); }
+
+        .mode-buttons button, .main-buttons button {
             background: none;
             border: 1px solid var(--text-color);
             color: var(--text-color);
-            padding: 8px 18px;
-            font-size: 0.85rem;
+            padding: 8px 16px;
+            font-size: 0.8rem;
             cursor: pointer;
-            margin: 5px;
             border-radius: 20px;
             transition: 0.3s;
         }
-        .buttons button:hover, .mode-buttons button:hover {
+        .mode-buttons button:hover, .main-buttons button:hover {
             background-color: var(--text-color);
             color: var(--bg-color);
         }
 
-        .bmac-container { margin-top: 30px; }
         .bmac-btn {
             text-decoration: none;
             font-size: 0.8rem;
             color: #ffffff !important;
             background-color: #FF813F; 
             padding: 10px 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: bold;
             display: inline-block;
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -121,30 +128,31 @@
         <button onclick="changeMode('rain')">☔ Rain</button>
     </div>
 
-    <div class="audio-controls">
-        <button id="muteBtn" onclick="toggleMute()">🔊</button>
-        <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()">
-    </div>
-
+    <div id="message">"Your limitation—it's only your imagination." ✨</div> 
+    
     <h1 id="status">Focus Time</h1>
-    <div id="message">Focus on your dream. ✨</div> 
     <div id="timer">25:00</div>
     
-    <div class="buttons">
-        <button onclick="startTimer()">Start</button>
-        <button onclick="pauseTimer()">Pause</button>
-        <button onclick="resetTimer()">Reset</button>
+    <div class="control-panel">
+        <div class="main-buttons">
+            <button onclick="startTimer()">Start</button>
+            <button onclick="pauseTimer()">Pause</button>
+            <button onclick="resetTimer()">Reset</button>
+        </div>
+
+        <div class="audio-ui">
+            <button id="muteBtn" onclick="toggleMute()">🔊</button>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()">
+        </div>
     </div>
 
-    <div class="bmac-container">
-        <a class="bmac-btn" href="https://buymeacoffee.com/achan555" target="_blank">☕ Buy me a coffee</a>
-    </div>
+    <a class="bmac-btn" href="https://buymeacoffee.com/achan555" target="_blank">☕ Buy me a coffee</a>
 </div>
 
-<audio id="bellSound4" src="https://noproblo.com/wp-content/uploads/2020/03/bell.mp3"></audio>
-<audio id="morningSound4" src="https://www.soundjay.com/nature/sounds/forest-birds-01.mp3?v=4" loop></audio>
-<audio id="nightSound4" src="https://www.soundjay.com/nature/sounds/campfire-1.mp3?v=4" loop></audio>
-<audio id="rainSound4" src="https://www.soundjay.com/nature/sounds/rain-07.mp3?v=4" loop></audio>
+<audio id="bellSound5" src="https://noproblo.com/wp-content/uploads/2020/03/bell.mp3"></audio>
+<audio id="morningSound5" src="https://www.soundjay.com/nature/sounds/forest-birds-01.mp3?v=5" loop></audio>
+<audio id="nightSound5" src="https://www.soundjay.com/nature/sounds/campfire-1.mp3?v=5" loop></audio>
+<audio id="rainSound5" src="https://www.soundjay.com/nature/sounds/rain-07.mp3?v=5" loop></audio>
 
 <script>
     let timeLeft = 25 * 60;
@@ -161,25 +169,25 @@
     const muteBtn = document.getElementById('muteBtn');
     const volumeSlider = document.getElementById('volumeSlider');
 
-    const messages = ["You've got this! ✨", "One step closer to CPA. 📚", "Stay focused, stay cozy. 🕯️"];
-
-    function updateDisplay() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
+    // 勉強に刺さる格言リスト
+    const quotes = [
+        "\"The secret of getting ahead is getting started.\" - Mark Twain",
+        "\"It always seems impossible until it's done.\" - Nelson Mandela",
+        "\"Don't stop when you're tired. Stop when you're done.\"",
+        "\"Focus on being productive instead of busy.\"",
+        "\"Your talent determines what you can do. Your motivation determines how much you are willing to do.\"",
+        "\"Success is the sum of small efforts, repeated day in and day out.\"",
+        "\"Do something today that your future self will thank you for.\"",
+        "\"The only way to learn mathematics is to do mathematics.\"",
+        "\"Dream bigger. Do bigger.\"",
+        "\"Work hard in silence, let your success be your noise.\""
+    ];
 
     function changeMode(mode) {
         document.body.className = mode + '-mode';
         stopAllMusic();
-
-        if (mode === 'rain') {
-            startRain();
-            playMusic('rainSound4');
-        } else {
-            stopRain();
-            playMusic(mode + 'Sound4');
-        }
+        if (mode === 'rain') { startRain(); playMusic('rainSound5'); }
+        else { stopRain(); playMusic(mode + 'Sound5'); }
     }
 
     function playMusic(id) {
@@ -188,57 +196,43 @@
         currentMusic = music;
         music.muted = isMuted;
         music.volume = volumeSlider.value;
-        music.play().catch(e => {
-            console.log("Audio waiting for interaction");
-        });
+        music.play().catch(() => {});
     }
 
     function stopAllMusic() {
-        ['morningSound4', 'nightSound4', 'rainSound4'].forEach(id => {
+        ['morningSound5', 'nightSound5', 'rainSound5'].forEach(id => {
             const m = document.getElementById(id);
             if (m) { m.pause(); m.currentTime = 0; }
         });
     }
 
-    function updateVolume() {
-        if (currentMusic) {
-            currentMusic.volume = volumeSlider.value;
-        }
-    }
-
     function toggleMute() {
         isMuted = !isMuted;
-        if (currentMusic) {
-            currentMusic.muted = isMuted;
-        }
+        if (currentMusic) currentMusic.muted = isMuted;
         muteBtn.textContent = isMuted ? "🔇" : "🔊";
+    }
+
+    function updateVolume() {
+        if (currentMusic) currentMusic.volume = volumeSlider.value;
     }
 
     function startTimer() {
         if (timerId) return;
-        
-        // ユーザーがStartを押したときに明示的に音声をアンロック
-        if (currentMusic) {
-            currentMusic.play();
-        } else {
-            changeMode('morning');
-        }
-
-        messageDisplay.textContent = "Working hard... 🕯️"; 
+        if (currentMusic) currentMusic.play(); else changeMode('morning');
+        messageDisplay.textContent = "Stay focused... 🕯️"; 
         timerId = setInterval(() => {
             timeLeft--;
             updateDisplay();
             if (timeLeft <= 0) {
                 clearInterval(timerId);
                 timerId = null;
-                const bell = document.getElementById('bellSound4');
+                const bell = document.getElementById('bellSound5');
                 bell.volume = volumeSlider.value;
-                bell.muted = isMuted;
                 bell.play();
                 isFocus = !isFocus;
                 statusDisplay.textContent = isFocus ? "Focus Time" : "Break Time";
                 timeLeft = isFocus ? 25 * 60 : 5 * 60;
-                if (!isFocus) messageDisplay.textContent = messages[Math.floor(Math.random() * messages.length)];
+                if (!isFocus) messageDisplay.textContent = quotes[Math.floor(Math.random() * quotes.length)];
                 updateDisplay();
             }
         }, 1000);
@@ -248,7 +242,6 @@
         clearInterval(timerId);
         timerId = null;
         if (currentMusic) currentMusic.pause();
-        messageDisplay.textContent = "Paused. ☕";
     }
 
     function resetTimer() {
@@ -256,6 +249,13 @@
         isFocus = true;
         timeLeft = 25 * 60;
         updateDisplay();
+        messageDisplay.textContent = "\"The best way to predict the future is to create it.\"";
+    }
+
+    function updateDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
     function createDrop() {
