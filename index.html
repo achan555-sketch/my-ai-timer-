@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +10,9 @@
             --text-color: #586e75;
             --accent-color: #d33682;
         }
-        body.morning-mode { --bg-color: #fdf6e3; --text-color: #586e75; --accent-color: #b58900; }
-        body.night-mode { --bg-color: #073642; --text-color: #93a1a1; --accent-color: #268bd2; }
+        /* Mode-specific Themes */
+        body.silence-mode { --bg-color: #fdf6e3; --text-color: #586e75; --accent-color: #b58900; }
+        body.fireplace-mode { --bg-color: #073642; --text-color: #93a1a1; --accent-color: #cb4b16; }
         body.rain-mode { --bg-color: #1e272e; --text-color: #d2dae2; --accent-color: #0fbcf9; }
 
         body {
@@ -25,15 +26,15 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
-            transition: background-color 0.8s ease;
+            transition: background-color 1s ease;
         }
 
-        /* 雨レイヤー */
+        /* Rain Animation */
         #rain-layer { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
         .drop {
             position: absolute;
             background-color: rgba(255, 255, 255, 0.4);
-            width: 1px;
+            width: 1.5px;
             height: 20px;
             top: -20px;
             animation: fall linear infinite;
@@ -44,7 +45,7 @@
             text-align: center; 
             padding: 40px; 
             z-index: 10;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(15px);
             border-radius: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.1);
@@ -53,29 +54,32 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        h1 { font-weight: 300; letter-spacing: 5px; margin-bottom: 5px; font-size: 0.9rem; text-transform: uppercase; opacity: 0.8; }
+        
         #message { 
             font-style: italic; 
-            font-size: 0.9rem; 
+            font-size: 0.95rem; 
             min-height: 3rem; 
-            margin-bottom: 20px; 
+            margin: 20px 0; 
             color: var(--accent-color); 
             display: flex;
             align-items: center;
             justify-content: center;
+            line-height: 1.4;
         }
 
-        #timer { font-size: 7rem; font-weight: 100; margin: 10px 0; font-variant-numeric: tabular-nums; }
+        #timer { font-size: 7.5rem; font-weight: 100; margin: 10px 0; font-variant-numeric: tabular-nums; }
         
-        .mode-buttons, .main-buttons { margin-bottom: 20px; }
+        .mode-buttons, .main-buttons { margin-bottom: 25px; }
         
         button {
             background: none;
             border: 1px solid var(--text-color);
             color: var(--text-color);
-            padding: 8px 16px;
+            padding: 9px 18px;
             font-size: 0.8rem;
             cursor: pointer;
-            border-radius: 20px;
+            border-radius: 25px;
             transition: 0.3s;
             margin: 4px;
         }
@@ -84,42 +88,44 @@
             color: var(--bg-color);
         }
 
-        /* サウンドUI */
+        /* Audio UI Controls */
         .audio-ui {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             margin-top: 10px;
+            opacity: 0.8;
         }
-        #volumeSlider { cursor: pointer; width: 80px; accent-color: var(--text-color); }
+        #volumeSlider { cursor: pointer; width: 90px; accent-color: var(--text-color); }
 
         .bmac-btn {
             text-decoration: none;
             font-size: 0.8rem;
             color: #ffffff !important;
             background-color: #FF813F; 
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 12px;
             font-weight: bold;
             display: inline-block;
-            margin-top: 30px;
+            margin-top: 35px;
         }
     </style>
 </head>
-<body class="morning-mode">
+<body class="silence-mode">
 
 <div id="rain-layer"></div>
 
 <div class="container">
     <div class="mode-buttons">
-        <button onclick="changeMode('morning')">☀️ Morning</button>
-        <button onclick="changeMode('night')">🌙 Night</button>
+        <button onclick="changeMode('silence')">🔇 Silence</button>
+        <button onclick="changeMode('fireplace')">🔥 Fireplace</button>
         <button onclick="changeMode('rain')">☔ Rain</button>
     </div>
 
     <div id="message">"The best way to predict the future is to create it." ✨</div> 
     
+    <h1 id="status">Focus Time</h1>
     <div id="timer">25:00</div>
     
     <div class="main-buttons">
@@ -129,16 +135,16 @@
     </div>
 
     <div class="audio-ui">
-        <button id="muteBtn" onclick="toggleMute()" style="border:none; font-size:1.2rem;">🔊</button>
+        <button id="muteBtn" onclick="toggleMute()" style="border:none; font-size:1.3rem;">🔊</button>
         <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()">
     </div>
 
     <a class="bmac-btn" href="https://buymeacoffee.com/achan555" target="_blank">☕ Buy me a coffee</a>
 </div>
 
-<audio id="bellSound9" src="https://noproblo.com/wp-content/uploads/2020/03/bell.mp3"></audio>
-<audio id="nightSound9" src="https://www.soundjay.com/nature/sounds/campfire-1.mp3" loop></audio>
-<audio id="rainSound9" src="https://www.soundjay.com/nature/sounds/rain-07.mp3" loop></audio>
+<audio id="bellSoundFinal" src="https://noproblo.com/wp-content/uploads/2020/03/bell.mp3"></audio>
+<audio id="fireplaceSoundFinal" src="https://www.soundjay.com/nature/sounds/campfire-1.mp3" loop></audio>
+<audio id="rainSoundFinal" src="https://www.soundjay.com/nature/sounds/rain-07.mp3" loop></audio>
 
 <script>
     let timeLeft = 25 * 60;
@@ -152,30 +158,33 @@
     const messageDisplay = document.getElementById('message');
     const rainLayer = document.getElementById('rain-layer');
     const volumeSlider = document.getElementById('volumeSlider');
+    const statusDisplay = document.getElementById('status');
 
     const quotes = [
         "\"Focus on being productive instead of busy.\"",
-        "\"Success is the sum of small efforts.\"",
-        "\"Your future self will thank you.\"",
-        "\"Work hard in silence, let success be your noise.\""
+        "\"Success is the sum of small efforts repeated day in and day out.\"",
+        "\"Do something today that your future self will thank you for.\"",
+        "\"Work hard in silence, let your success be your noise.\"",
+        "\"Believe in your potential.\"",
+        "\"Small steps lead to big results.\""
     ];
 
     function changeMode(mode) {
         document.body.className = mode + '-mode';
         stopAllMusic();
         
-        if (mode === 'morning') {
+        if (mode === 'silence') {
             stopRain();
-            currentMusic = null; // Morningは音なし
+            currentMusic = null;
             messageDisplay.textContent = "Deep Focus in Silence... 🕯️";
-        } else if (mode === 'night') {
+        } else if (mode === 'fireplace') {
             stopRain();
-            playMusic('nightSound9');
-            messageDisplay.textContent = "Cozy Fireplace Night... 🌙";
+            playMusic('fireplaceSoundFinal');
+            messageDisplay.textContent = "Warm Fireplace Atmosphere... 🔥";
         } else if (mode === 'rain') {
             startRain();
-            playMusic('rainSound9');
-            messageDisplay.textContent = "Focusing in the Rain... ☔";
+            playMusic('rainSoundFinal');
+            messageDisplay.textContent = "Calm Rainy Day Focus... ☔";
         }
     }
 
@@ -185,11 +194,13 @@
         currentMusic = music;
         music.muted = isMuted;
         music.volume = volumeSlider.value;
-        music.play().catch(() => {});
+        music.play().catch(() => {
+            console.log("Audio waiting for user interaction");
+        });
     }
 
     function stopAllMusic() {
-        ['nightSound9', 'rainSound9'].forEach(id => {
+        ['fireplaceSoundFinal', 'rainSoundFinal'].forEach(id => {
             const m = document.getElementById(id);
             if (m) { m.pause(); m.currentTime = 0; }
         });
@@ -208,16 +219,18 @@
     function startTimer() {
         if (timerId) return;
         if (currentMusic) currentMusic.play();
+        messageDisplay.textContent = "Stay Focused... 🕯️";
         timerId = setInterval(() => {
             timeLeft--;
             updateDisplay();
             if (timeLeft <= 0) {
                 clearInterval(timerId);
                 timerId = null;
-                const bell = document.getElementById('bellSound9');
+                const bell = document.getElementById('bellSoundFinal');
                 bell.volume = volumeSlider.value;
                 bell.play();
                 isFocus = !isFocus;
+                statusDisplay.textContent = isFocus ? "Focus Time" : "Break Time";
                 timeLeft = isFocus ? 25 * 60 : 5 * 60;
                 messageDisplay.textContent = quotes[Math.floor(Math.random() * quotes.length)];
                 updateDisplay();
@@ -229,6 +242,7 @@
         clearInterval(timerId);
         timerId = null;
         if (currentMusic) currentMusic.pause();
+        messageDisplay.textContent = "Timer Paused. ☕";
     }
 
     function resetTimer() {
@@ -236,6 +250,7 @@
         isFocus = true;
         timeLeft = 25 * 60;
         updateDisplay();
+        statusDisplay.textContent = "Focus Time";
         messageDisplay.textContent = "Ready to start? ✨";
     }
 
@@ -256,7 +271,7 @@
 
     function startRain() {
         if (rainInterval) return;
-        rainInterval = setInterval(createDrop, 40);
+        rainInterval = setInterval(createDrop, 35);
     }
 
     function stopRain() {
