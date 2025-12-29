@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozy AI Focus Timer | For Every Learner</title>
+    <title>Cozy AI Focus Timer | Rain Edition</title>
     <style>
         :root {
             --bg-color: #fdf6e3; 
             --text-color: #586e75;
             --accent-color: #d33682;
         }
+        /* モード設定 */
         body.morning-mode { --bg-color: #fdf6e3; --text-color: #586e75; }
         body.night-mode { --bg-color: #073642; --text-color: #93a1a1; }
-        body.rain-mode { --bg-color: #d1d9e0; --text-color: #4f5b66; }
+        body.rain-mode { --bg-color: #2c3e50; --text-color: #ecf0f1; }
 
         body {
             background-color: var(--bg-color);
@@ -24,18 +25,33 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden; /* 雨がはみ出さないように */
             transition: all 0.8s ease;
+            position: relative;
         }
-        .container { text-align: center; padding: 20px; }
+
+        /* 雨のしずくのスタイル */
+        .drop {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.3);
+            width: 2px;
+            height: 15px;
+            top: -20px;
+            z-index: 0;
+            pointer-events: none; /* クリックを邪魔しない */
+        }
+
+        .container { 
+            text-align: center; 
+            padding: 20px; 
+            z-index: 10; /* コンテンツを雨より前に出す */
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(2px);
+            border-radius: 30px;
+        }
+
         h1 { font-weight: 300; letter-spacing: 2px; margin-bottom: 10px; }
-        #message { 
-            font-style: italic; 
-            font-size: 1.1rem; 
-            height: 1.5rem; 
-            margin-bottom: 25px; 
-            color: var(--accent-color);
-            font-weight: 300;
-        }
+        #message { font-style: italic; font-size: 1.1rem; height: 1.5rem; margin-bottom: 25px; color: var(--accent-color); }
         #timer { font-size: 8rem; font-weight: 100; margin: 10px 0; }
         
         .buttons button, .mode-buttons button {
@@ -64,11 +80,16 @@
             border-radius: 10px;
             font-weight: bold;
         }
+
+        /* 雨のアニメーション */
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
     </style>
 </head>
 <body class="morning-mode">
 
-<div class="container">
+<div id="rain-layer"></div> <div class="container">
     <div class="mode-buttons">
         <button onclick="changeMode('morning-mode')">☀️ Morning</button>
         <button onclick="changeMode('night-mode')">🌙 Night</button>
@@ -96,34 +117,17 @@
     let timeLeft = 25 * 60;
     let timerId = null;
     let isFocus = true;
+    let rainInterval = null;
 
     const timerDisplay = document.getElementById('timer');
     const statusDisplay = document.getElementById('status');
     const messageDisplay = document.getElementById('message');
     const bell = document.getElementById('bellSound');
+    const rainLayer = document.getElementById('rain-layer');
 
-    // 全学習者に刺さる英語メッセージリスト（厳選20パターン）
     const messages = [
-        "You're doing amazing! ✨",
-        "Small steps lead to big results. 🏔️",
-        "Consistency is the key. Keep going! 🕯️",
-        "Your future self will thank you. 🕊️",
-        "Believe in your potential. ✨",
-        "Focus on the progress, not perfection. 🌱",
-        "One step at a time. You've got this! 📔",
-        "Mistakes are proof that you're trying. 💪",
-        "Hard work always pays off. 🌊",
-        "Don't stop until you're proud. 🔥",
-        "Stay patient and trust the journey. ⏳",
-        "You are capable of brave things. ✨",
-        "Make yourself proud today. 🕊️",
-        "Success is a series of small wins. 🏆",
-        "Keep your eyes on the prize. 🎯",
-        "You're stronger than you think. 💪",
-        "Focus on your why. 💡",
-        "Slow progress is still progress. 🐢",
-        "Turn your 'can'ts' into 'cans'. 🚀",
-        "Great things take time. 🌸"
+        "You're doing amazing! ✨", "Small steps lead to big results. 🏔️", "Consistency is the key! 🕯️",
+        "Your future self will thank you. 🕊️", "Focus on progress, not perfection. 🌱", "One step at a time. 📔"
     ];
 
     function updateDisplay() {
@@ -134,6 +138,31 @@
 
     function changeMode(modeName) {
         document.body.className = modeName;
+        if (modeName === 'rain-mode') {
+            startRain();
+        } else {
+            stopRain();
+        }
+    }
+
+    function createDrop() {
+        const drop = document.createElement('div');
+        drop.classList.add('drop');
+        drop.style.left = Math.random() * window.innerWidth + 'px';
+        drop.style.animation = `fall ${Math.random() * 1 + 0.5}s linear infinite`;
+        rainLayer.appendChild(drop);
+        setTimeout(() => drop.remove(), 1500);
+    }
+
+    function startRain() {
+        if (rainInterval) return;
+        rainInterval = setInterval(createDrop, 50);
+    }
+
+    function stopRain() {
+        clearInterval(rainInterval);
+        rainInterval = null;
+        rainLayer.innerHTML = '';
     }
 
     function startTimer() {
@@ -150,7 +179,6 @@
                 if (!isFocus) {
                     statusDisplay.textContent = "Break Time";
                     timeLeft = 5 * 60;
-                    // 休憩開始時にランダムメッセージを表示
                     messageDisplay.textContent = messages[Math.floor(Math.random() * messages.length)];
                 } else {
                     statusDisplay.textContent = "Focus Time";
