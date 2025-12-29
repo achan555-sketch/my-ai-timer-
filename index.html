@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozy AI Focus Timer</title>
+    <title>Cozy AI Focus Timer | For Every Learner</title>
     <style>
         :root {
             --bg-color: #fdf6e3; 
-            --accent-color: #d33682; 
             --text-color: #586e75;
+            --accent-color: #d33682;
         }
+        body.morning-mode { --bg-color: #fdf6e3; --text-color: #586e75; }
+        body.night-mode { --bg-color: #073642; --text-color: #93a1a1; }
+        body.rain-mode { --bg-color: #d1d9e0; --text-color: #4f5b66; }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -20,47 +24,61 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            transition: all 0.8s ease;
         }
-        .container { text-align: center; }
-        h1 { font-weight: 300; letter-spacing: 2px; }
-        #timer {
-            font-size: 8rem;
-            font-weight: 100;
-            margin: 20px 0;
+        .container { text-align: center; padding: 20px; }
+        h1 { font-weight: 300; letter-spacing: 2px; margin-bottom: 10px; }
+        #message { 
+            font-style: italic; 
+            font-size: 1.1rem; 
+            height: 1.5rem; 
+            margin-bottom: 25px; 
+            color: var(--accent-color);
+            font-weight: 300;
         }
-        .buttons button {
+        #timer { font-size: 8rem; font-weight: 100; margin: 10px 0; }
+        
+        .buttons button, .mode-buttons button {
             background: none;
             border: 1px solid var(--text-color);
             color: var(--text-color);
-            padding: 10px 20px;
-            font-size: 1rem;
+            padding: 8px 18px;
+            font-size: 0.9rem;
             cursor: pointer;
-            margin: 0 10px;
+            margin: 5px;
             border-radius: 20px;
             transition: 0.3s;
         }
-        .buttons button:hover {
+        .buttons button:hover, .mode-buttons button:hover {
             background-color: var(--text-color);
             color: var(--bg-color);
         }
-        .bmac-container { margin-top: 50px; }
+        .mode-buttons { margin-bottom: 30px; }
+        .bmac-container { margin-top: 40px; }
         .bmac-btn {
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #ffffff;
             background-color: #FF813F; 
-            padding: 12px 20px;
+            padding: 10px 18px;
             border-radius: 10px;
             font-weight: bold;
-            display: inline-block;
         }
     </style>
 </head>
-<body>
+<body class="morning-mode">
 
 <div class="container">
+    <div class="mode-buttons">
+        <button onclick="changeMode('morning-mode')">☀️ Morning</button>
+        <button onclick="changeMode('night-mode')">🌙 Night</button>
+        <button onclick="changeMode('rain-mode')">☔ Rain</button>
+    </div>
+
     <h1 id="status">Focus Time</h1>
+    <div id="message">Make it happen. ✨</div> 
     <div id="timer">25:00</div>
+    
     <div class="buttons">
         <button onclick="startTimer()">Start</button>
         <button onclick="pauseTimer()">Pause</button>
@@ -72,6 +90,8 @@
     </div>
 </div>
 
+<audio id="bellSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
 <script>
     let timeLeft = 25 * 60;
     let timerId = null;
@@ -79,6 +99,32 @@
 
     const timerDisplay = document.getElementById('timer');
     const statusDisplay = document.getElementById('status');
+    const messageDisplay = document.getElementById('message');
+    const bell = document.getElementById('bellSound');
+
+    // 全学習者に刺さる英語メッセージリスト（厳選20パターン）
+    const messages = [
+        "You're doing amazing! ✨",
+        "Small steps lead to big results. 🏔️",
+        "Consistency is the key. Keep going! 🕯️",
+        "Your future self will thank you. 🕊️",
+        "Believe in your potential. ✨",
+        "Focus on the progress, not perfection. 🌱",
+        "One step at a time. You've got this! 📔",
+        "Mistakes are proof that you're trying. 💪",
+        "Hard work always pays off. 🌊",
+        "Don't stop until you're proud. 🔥",
+        "Stay patient and trust the journey. ⏳",
+        "You are capable of brave things. ✨",
+        "Make yourself proud today. 🕊️",
+        "Success is a series of small wins. 🏆",
+        "Keep your eyes on the prize. 🎯",
+        "You're stronger than you think. 💪",
+        "Focus on your why. 💡",
+        "Slow progress is still progress. 🐢",
+        "Turn your 'can'ts' into 'cans'. 🚀",
+        "Great things take time. 🌸"
+    ];
 
     function updateDisplay() {
         const mins = Math.floor(timeLeft / 60);
@@ -86,18 +132,31 @@
         timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
+    function changeMode(modeName) {
+        document.body.className = modeName;
+    }
+
     function startTimer() {
         if (timerId) return;
+        messageDisplay.textContent = "Stay focused... 🕯️"; 
         timerId = setInterval(() => {
             timeLeft--;
             updateDisplay();
             if (timeLeft <= 0) {
                 clearInterval(timerId);
                 timerId = null;
-                alert(isFocus ? "Time to break!" : "Focus time starts!");
+                bell.play();
                 isFocus = !isFocus;
-                timeLeft = isFocus ? 25 * 60 : 5 * 60;
-                statusDisplay.textContent = isFocus ? "Focus Time" : "Break Time";
+                if (!isFocus) {
+                    statusDisplay.textContent = "Break Time";
+                    timeLeft = 5 * 60;
+                    // 休憩開始時にランダムメッセージを表示
+                    messageDisplay.textContent = messages[Math.floor(Math.random() * messages.length)];
+                } else {
+                    statusDisplay.textContent = "Focus Time";
+                    timeLeft = 25 * 60;
+                    messageDisplay.textContent = "Let's start again! ✨";
+                }
                 updateDisplay();
             }
         }, 1000);
@@ -106,6 +165,7 @@
     function pauseTimer() {
         clearInterval(timerId);
         timerId = null;
+        messageDisplay.textContent = "Paused. ☕";
     }
 
     function resetTimer() {
@@ -113,8 +173,9 @@
         isFocus = true;
         timeLeft = 25 * 60;
         statusDisplay.textContent = "Focus Time";
+        messageDisplay.textContent = "Ready? ✨";
         updateDisplay();
     }
 </script>
 </body>
-</html> 
+</html>
