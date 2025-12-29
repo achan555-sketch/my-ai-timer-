@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozy AI Focus Timer | Rain Edition</title>
+    <title>Cozy AI Focus Timer | Music Edition</title>
     <style>
         :root {
             --bg-color: #fdf6e3; 
             --text-color: #586e75;
             --accent-color: #d33682;
         }
-        /* モード設定 */
         body.morning-mode { --bg-color: #fdf6e3; --text-color: #586e75; }
         body.night-mode { --bg-color: #073642; --text-color: #93a1a1; }
         body.rain-mode { --bg-color: #2c3e50; --text-color: #ecf0f1; }
@@ -25,12 +24,11 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden; /* 雨がはみ出さないように */
+            overflow: hidden;
             transition: all 0.8s ease;
             position: relative;
         }
 
-        /* 雨のしずくのスタイル */
         .drop {
             position: absolute;
             background-color: rgba(255, 255, 255, 0.3);
@@ -38,16 +36,17 @@
             height: 15px;
             top: -20px;
             z-index: 0;
-            pointer-events: none; /* クリックを邪魔しない */
+            pointer-events: none;
         }
 
         .container { 
             text-align: center; 
-            padding: 20px; 
-            z-index: 10; /* コンテンツを雨より前に出す */
+            padding: 30px; 
+            z-index: 10;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(5px);
             border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         h1 { font-weight: 300; letter-spacing: 2px; margin-bottom: 10px; }
@@ -81,7 +80,6 @@
             font-weight: bold;
         }
 
-        /* 雨のアニメーション */
         @keyframes fall {
             to { transform: translateY(100vh); }
         }
@@ -89,11 +87,13 @@
 </head>
 <body class="morning-mode">
 
-<div id="rain-layer"></div> <div class="container">
+<div id="rain-layer"></div>
+
+<div class="container">
     <div class="mode-buttons">
-        <button onclick="changeMode('morning-mode')">☀️ Morning</button>
-        <button onclick="changeMode('night-mode')">🌙 Night</button>
-        <button onclick="changeMode('rain-mode')">☔ Rain</button>
+        <button onclick="changeMode('morning-mode')">☀️ Morning (Forest)</button>
+        <button onclick="changeMode('night-mode')">🌙 Night (Crickets)</button>
+        <button onclick="changeMode('rain-mode')">☔ Rain (Heavy)</button>
     </div>
 
     <h1 id="status">Focus Time</h1>
@@ -112,12 +112,16 @@
 </div>
 
 <audio id="bellSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="morningSound" src="https://actions.google.com/sounds/v1/ambiences/forest_morning_ambience.ogg" loop></audio>
+<audio id="nightSound" src="https://actions.google.com/sounds/v1/ambiences/night_ambience.ogg" loop></audio>
+<audio id="rainSound" src="https://actions.google.com/sounds/v1/ambiences/rain_heavy_loud.ogg" loop></audio>
 
 <script>
     let timeLeft = 25 * 60;
     let timerId = null;
     let isFocus = true;
     let rainInterval = null;
+    let currentMusic = null;
 
     const timerDisplay = document.getElementById('timer');
     const statusDisplay = document.getElementById('status');
@@ -130,19 +134,35 @@
         "Your future self will thank you. 🕊️", "Focus on progress, not perfection. 🌱", "One step at a time. 📔"
     ];
 
-    function updateDisplay() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
-
     function changeMode(modeName) {
         document.body.className = modeName;
+        
+        // 全ての音楽を止める
+        stopAllMusic();
+
         if (modeName === 'rain-mode') {
             startRain();
-        } else {
+            playMusic('rainSound');
+        } else if (modeName === 'morning-mode') {
             stopRain();
+            playMusic('morningSound');
+        } else if (modeName === 'night-mode') {
+            stopRain();
+            playMusic('nightSound');
         }
+    }
+
+    function playMusic(id) {
+        currentMusic = document.getElementById(id);
+        currentMusic.play().catch(e => console.log("ブラウザの制限で再生にはクリックが必要です"));
+    }
+
+    function stopAllMusic() {
+        ['morningSound', 'nightSound', 'rainSound'].forEach(id => {
+            const m = document.getElementById(id);
+            m.pause();
+            m.currentTime = 0;
+        });
     }
 
     function createDrop() {
@@ -168,6 +188,12 @@
     function startTimer() {
         if (timerId) return;
         messageDisplay.textContent = "Stay focused... 🕯️"; 
+        
+        // タイマー開始時に音楽が流れていなければ現在のモードの音を再生
+        if (currentMusic && currentMusic.paused) {
+            currentMusic.play();
+        }
+
         timerId = setInterval(() => {
             timeLeft--;
             updateDisplay();
@@ -194,6 +220,7 @@
         clearInterval(timerId);
         timerId = null;
         messageDisplay.textContent = "Paused. ☕";
+        if (currentMusic) currentMusic.pause();
     }
 
     function resetTimer() {
@@ -203,6 +230,12 @@
         statusDisplay.textContent = "Focus Time";
         messageDisplay.textContent = "Ready? ✨";
         updateDisplay();
+    }
+
+    function updateDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 </script>
 </body>
