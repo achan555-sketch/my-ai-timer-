@@ -6,8 +6,8 @@
     <title>Cozy AI Focus Timer</title>
     <style>
         :root {
-            --bg-color: #fdf6e3; /* 温かみのあるベージュ */
-            --accent-color: #d33682; /* 落ち着いたピンク */
+            --bg-color: #fdf6e3; 
+            --accent-color: #d33682; 
             --text-color: #586e75;
         }
         body {
@@ -20,7 +20,6 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            transition: background-color 0.5s;
         }
         .container { text-align: center; }
         h1 { font-weight: 300; letter-spacing: 2px; }
@@ -44,15 +43,16 @@
             background-color: var(--text-color);
             color: var(--bg-color);
         }
-        /* 投げ銭ボタンのスタイル */
         .bmac-container { margin-top: 50px; }
         .bmac-btn {
             text-decoration: none;
             font-size: 0.9rem;
             color: #ffffff;
-            background-color: #FF813F; /* Buy Me a Coffeeのオレンジ */
-            padding: 10px 15px;
+            background-color: #FF813F; 
+            padding: 12px 20px;
             border-radius: 10px;
+            font-weight: bold;
+            display: inline-block;
         }
     </style>
 </head>
@@ -68,7 +68,7 @@
     </div>
 
     <div class="bmac-container">
-        <a class="bmac-btn" href="https://www.buymeacoffee.com/YOUR_NAME" target="_blank">☕ Buy me a coffee</a>
+        <a class="bmac-btn" href="https://buymeacoffee.com/achan555" target="_blank">☕ Buy me a coffee</a>
     </div>
 </div>
 
@@ -94,7 +94,7 @@
             if (timeLeft <= 0) {
                 clearInterval(timerId);
                 timerId = null;
-                alert(isFocus ? "休憩しましょう！" : "集中タイム再開！");
+                alert(isFocus ? "Time to break!" : "Focus time starts!");
                 isFocus = !isFocus;
                 timeLeft = isFocus ? 25 * 60 : 5 * 60;
                 statusDisplay.textContent = isFocus ? "Focus Time" : "Break Time";
@@ -117,4 +117,4 @@
     }
 </script>
 </body>
-</html>
+</html> 
