@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozy AI Focus Timer | Final Audio Fix</title>
+    <title>Cozy AI Focus Timer | achan555 Edition</title>
     <style>
         :root {
             --bg-color: #fdf6e3; 
             --text-color: #586e75;
             --accent-color: #d33682;
         }
+        /* モード別背景 */
         body.morning-mode { --bg-color: #fdf6e3; --text-color: #586e75; }
         body.night-mode { --bg-color: #073642; --text-color: #93a1a1; }
         body.rain-mode { --bg-color: #2c3e50; --text-color: #ecf0f1; }
@@ -29,60 +30,63 @@
             position: relative;
         }
 
+        /* 雨のアニメーション */
         .drop {
             position: absolute;
-            background-color: rgba(255, 255, 255, 0.3);
-            width: 2px;
+            background-color: rgba(255, 255, 255, 0.4);
+            width: 1.5px;
             height: 15px;
             top: -20px;
             z-index: 0;
             pointer-events: none;
+            animation: fall linear infinite;
         }
+        @keyframes fall { to { transform: translateY(100vh); } }
 
         .container { 
             text-align: center; 
-            padding: 30px; 
+            padding: 40px; 
             z-index: 10;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 90%;
         }
 
-        h1 { font-weight: 300; letter-spacing: 2px; margin-bottom: 10px; }
-        #message { font-style: italic; font-size: 1.1rem; height: 1.5rem; margin-bottom: 25px; color: var(--accent-color); }
-        #timer { font-size: 8rem; font-weight: 100; margin: 10px 0; }
+        h1 { font-weight: 300; letter-spacing: 3px; margin-bottom: 5px; font-size: 1.5rem; }
+        #message { font-style: italic; font-size: 1.1rem; height: 1.5rem; margin-bottom: 30px; color: var(--accent-color); font-weight: 300; }
+        #timer { font-size: 8rem; font-weight: 100; margin: 10px 0; font-variant-numeric: tabular-nums; }
         
         .buttons button, .mode-buttons button {
             background: none;
             border: 1px solid var(--text-color);
             color: var(--text-color);
-            padding: 8px 18px;
+            padding: 10px 22px;
             font-size: 0.9rem;
             cursor: pointer;
-            margin: 5px;
-            border-radius: 20px;
+            margin: 8px;
+            border-radius: 25px;
             transition: 0.3s;
         }
         .buttons button:hover, .mode-buttons button:hover {
             background-color: var(--text-color);
             color: var(--bg-color);
         }
-        .mode-buttons { margin-bottom: 30px; }
-        .bmac-container { margin-top: 40px; }
+        .mode-buttons { margin-bottom: 35px; }
+        .bmac-container { margin-top: 50px; }
         .bmac-btn {
             text-decoration: none;
-            font-size: 0.85rem;
-            color: #ffffff;
+            font-size: 0.9rem;
+            color: #ffffff !important;
             background-color: #FF813F; 
-            padding: 10px 18px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 12px;
             font-weight: bold;
+            display: inline-block;
+            transition: transform 0.2s;
         }
-
-        @keyframes fall {
-            to { transform: translateY(100vh); }
-        }
+        .bmac-btn:hover { transform: scale(1.05); }
     </style>
 </head>
 <body class="morning-mode">
@@ -91,13 +95,13 @@
 
 <div class="container">
     <div class="mode-buttons">
-        <button onclick="changeMode('morning-mode')">☀️ Morning</button>
-        <button onclick="changeMode('night-mode')">🌙 Night</button>
-        <button onclick="changeMode('rain-mode')">☔ Rain</button>
+        <button onclick="changeMode('morning')">☀️ Morning</button>
+        <button onclick="changeMode('night')">🌙 Night</button>
+        <button onclick="changeMode('rain')">☔ Rain</button>
     </div>
 
     <h1 id="status">Focus Time</h1>
-    <div id="message">Click any button to enable audio ☕</div> 
+    <div id="message">Ready to achieve your goals? ✨</div> 
     <div id="timer">25:00</div>
     
     <div class="buttons">
@@ -111,10 +115,10 @@
     </div>
 </div>
 
-<audio id="bellSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-<audio id="morningSound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
-<audio id="nightSound" src="https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3" loop></audio>
-<audio id="rainSound" src="https://assets.mixkit.co/active_storage/sfx/1206/1206-preview.mp3" loop></audio>
+<audio id="bellSound3" src="https://noproblo.com/wp-content/uploads/2020/03/bell.mp3"></audio>
+<audio id="morningSound3" src="https://www.soundjay.com/nature/sounds/forest-birds-01.mp3?v=3" loop></audio>
+<audio id="nightSound3" src="https://www.soundjay.com/nature/sounds/campfire-1.mp3?v=3" loop></audio>
+<audio id="rainSound3" src="https://www.soundjay.com/nature/sounds/rain-07.mp3?v=3" loop></audio>
 
 <script>
     let timeLeft = 25 * 60;
@@ -126,54 +130,54 @@
     const timerDisplay = document.getElementById('timer');
     const statusDisplay = document.getElementById('status');
     const messageDisplay = document.getElementById('message');
-    const bell = document.getElementById('bellSound');
     const rainLayer = document.getElementById('rain-layer');
 
-    const messages = ["You're doing amazing! ✨", "Focus on the progress. 🌱", "One step at a time. 📔"];
+    const messages = [
+        "You're doing amazing! ✨", "Small steps lead to big results. 🏔️", "Consistency is the key! 🕯️",
+        "Your future self will thank you. 🕊️", "Focus on progress, not perfection. 🌱", "One step at a time. 📔",
+        "Make yourself proud today. 🕊️", "Success is a series of small wins. 🏆", "Stay patient and trust the journey. ⏳"
+    ];
 
-    function changeMode(modeName) {
-        document.body.className = modeName;
+    function updateDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function changeMode(mode) {
+        document.body.className = mode + '-mode';
         stopAllMusic();
 
-        if (modeName === 'rain-mode') {
+        if (mode === 'rain') {
             startRain();
-            playMusic('rainSound');
-        } else if (modeName === 'morning-mode') {
+            playMusic('rainSound3');
+        } else {
             stopRain();
-            playMusic('morningSound');
-        } else if (modeName === 'night-mode') {
-            stopRain();
-            playMusic('nightSound');
+            playMusic(mode + 'Sound3');
         }
     }
 
     function playMusic(id) {
         const music = document.getElementById(id);
+        if (!music) return;
         currentMusic = music;
-        music.volume = 0.4;
+        music.volume = 0.5;
         music.play().catch(() => {
-            messageDisplay.textContent = "Click Start to hear audio! 🎵";
+            messageDisplay.textContent = "Click Start to hear the sounds! 🎵";
         });
     }
 
     function stopAllMusic() {
-        ['morningSound', 'nightSound', 'rainSound'].forEach(id => {
+        ['morningSound3', 'nightSound3', 'rainSound3'].forEach(id => {
             const m = document.getElementById(id);
-            m.pause();
-            m.currentTime = 0;
+            if (m) { m.pause(); m.currentTime = 0; }
         });
     }
 
     function startTimer() {
         if (timerId) return;
-        
-        // 重要：Startを押した瞬間に音のブロックを解除する
-        if (currentMusic) {
-            currentMusic.play();
-        } else {
-            // モード未選択ならMorningの音を流す
-            changeMode('morning-mode');
-        }
+        if (currentMusic) currentMusic.play();
+        else changeMode('morning');
 
         messageDisplay.textContent = "Stay focused... 🕯️"; 
         timerId = setInterval(() => {
@@ -182,7 +186,7 @@
             if (timeLeft <= 0) {
                 clearInterval(timerId);
                 timerId = null;
-                bell.play();
+                document.getElementById('bellSound3').play();
                 isFocus = !isFocus;
                 statusDisplay.textContent = isFocus ? "Focus Time" : "Break Time";
                 timeLeft = isFocus ? 25 * 60 : 5 * 60;
@@ -196,33 +200,30 @@
         clearInterval(timerId);
         timerId = null;
         if (currentMusic) currentMusic.pause();
+        messageDisplay.textContent = "Paused. ☕";
     }
 
     function resetTimer() {
         pauseTimer();
         isFocus = true;
         timeLeft = 25 * 60;
+        statusDisplay.textContent = "Focus Time";
+        messageDisplay.textContent = "Ready? ✨";
         updateDisplay();
-    }
-
-    function updateDisplay() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
     function createDrop() {
         const drop = document.createElement('div');
         drop.classList.add('drop');
         drop.style.left = Math.random() * window.innerWidth + 'px';
-        drop.style.animation = `fall ${Math.random() * 1 + 0.5}s linear infinite`;
+        drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
         rainLayer.appendChild(drop);
-        setTimeout(() => drop.remove(), 1500);
+        setTimeout(() => drop.remove(), 1000);
     }
 
     function startRain() {
         if (rainInterval) return;
-        rainInterval = setInterval(createDrop, 50);
+        rainInterval = setInterval(createDrop, 40);
     }
 
     function stopRain() {
@@ -233,11 +234,3 @@
 </script>
 </body>
 </html>
-
-<audio id="bellSound" src="https://noproblo.com/wp-content/uploads/2020/03/bell.mp3"></audio>
-
-<audio id="morningSound" src="https://www.soundjay.com/nature/sounds/forest-birds-01.mp3" loop></audio>
-
-<audio id="nightSound" src="https://www.soundjay.com/nature/sounds/campfire-1.mp3" loop></audio>
-
-<audio id="rainSound" src="https://www.soundjay.com/nature/sounds/rain-07.mp3" loop></audio>
