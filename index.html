@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozy Focus Timer | USCPA Candidate achan555</title>
+    <title>Cozy Focus Timer | achan555</title>
     <style>
         :root {
             --bg-color: #fdf6e3; 
             --text-color: #586e75;
             --accent-color: #d33682;
         }
-        /* モード別テーマ設定 */
         body.morning-mode { --bg-color: #fdf6e3; --text-color: #586e75; --accent-color: #b58900; }
         body.night-mode { --bg-color: #073642; --text-color: #93a1a1; --accent-color: #268bd2; }
         body.rain-mode { --bg-color: #1e272e; --text-color: #d2dae2; --accent-color: #0fbcf9; }
@@ -26,11 +25,10 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
-            transition: background-color 1s ease, color 1s ease;
-            position: relative;
+            transition: background-color 0.8s ease;
         }
 
-        /* 雨のアニメーション */
+        /* 雨レイヤー */
         #rain-layer { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
         .drop {
             position: absolute;
@@ -47,76 +45,66 @@
             padding: 40px; 
             z-index: 10;
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
             border-radius: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            max-width: 450px;
+            max-width: 400px;
             width: 85%;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        h1 { font-weight: 300; letter-spacing: 5px; margin-bottom: 5px; font-size: 0.9rem; text-transform: uppercase; opacity: 0.8; }
         #message { 
             font-style: italic; 
-            font-size: 1rem; 
-            min-height: 3.5rem; 
-            margin: 20px 0; 
+            font-size: 0.9rem; 
+            min-height: 3rem; 
+            margin-bottom: 20px; 
             color: var(--accent-color); 
-            line-height: 1.5;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 10px;
         }
-        #timer { font-size: 7.5rem; font-weight: 100; margin: 5px 0; font-variant-numeric: tabular-nums; letter-spacing: -2px; }
-        
-        .control-panel { display: flex; flex-direction: column; gap: 25px; margin-top: 15px; }
 
-        /* サウンドUIの統合 */
+        #timer { font-size: 7rem; font-weight: 100; margin: 10px 0; font-variant-numeric: tabular-nums; }
+        
+        .mode-buttons, .main-buttons { margin-bottom: 20px; }
+        
+        button {
+            background: none;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: 0.3s;
+            margin: 4px;
+        }
+        button:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        /* サウンドUI */
         .audio-ui {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 8px 20px;
-            border-radius: 30px;
-            width: fit-content;
-            margin: 0 auto;
+            gap: 10px;
+            margin-top: 10px;
         }
-        #muteBtn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-color); transition: transform 0.2s; }
-        #muteBtn:hover { transform: scale(1.1); }
-        #volumeSlider { cursor: pointer; width: 90px; accent-color: var(--text-color); opacity: 0.7; }
-
-        .mode-buttons button, .main-buttons button {
-            background: none;
-            border: 1px solid var(--text-color);
-            color: var(--text-color);
-            padding: 9px 18px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            border-radius: 25px;
-            transition: 0.3s;
-            margin: 4px;
-        }
-        .mode-buttons button:hover, .main-buttons button:hover {
-            background-color: var(--text-color);
-            color: var(--bg-color);
-        }
+        #volumeSlider { cursor: pointer; width: 80px; accent-color: var(--text-color); }
 
         .bmac-btn {
             text-decoration: none;
             font-size: 0.8rem;
             color: #ffffff !important;
             background-color: #FF813F; 
-            padding: 12px 24px;
-            border-radius: 15px;
+            padding: 10px 20px;
+            border-radius: 12px;
             font-weight: bold;
             display: inline-block;
-            margin-top: 40px;
-            transition: transform 0.2s;
+            margin-top: 30px;
         }
-        .bmac-btn:hover { transform: translateY(-3px); }
     </style>
 </head>
 <body class="morning-mode">
@@ -130,31 +118,27 @@
         <button onclick="changeMode('rain')">☔ Rain</button>
     </div>
 
-    <div id="message">"The secret of getting ahead is getting started." ✨</div> 
+    <div id="message">"The best way to predict the future is to create it." ✨</div> 
     
-    <h1 id="status">Focus Time</h1>
     <div id="timer">25:00</div>
     
-    <div class="control-panel">
-        <div class="main-buttons">
-            <button onclick="startTimer()">Start</button>
-            <button onclick="pauseTimer()">Pause</button>
-            <button onclick="resetTimer()">Reset</button>
-        </div>
+    <div class="main-buttons">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()">Pause</button>
+        <button onclick="resetTimer()">Reset</button>
+    </div>
 
-        <div class="audio-ui">
-            <button id="muteBtn" onclick="toggleMute()">🔊</button>
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()">
-        </div>
+    <div class="audio-ui">
+        <button id="muteBtn" onclick="toggleMute()" style="border:none; font-size:1.2rem;">🔊</button>
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()">
     </div>
 
     <a class="bmac-btn" href="https://buymeacoffee.com/achan555" target="_blank">☕ Buy me a coffee</a>
 </div>
 
-<audio id="bellSound8" src="https://noproblo.com/wp-content/uploads/2020/03/bell.mp3"></audio>
-<audio id="morningSound8" src="https://www.soundjay.com/nature/sounds/forest-birds-02.mp3?v=8" loop></audio>
-<audio id="nightSound8" src="https://www.soundjay.com/nature/sounds/campfire-1.mp3?v=8" loop></audio>
-<audio id="rainSound8" src="https://www.soundjay.com/nature/sounds/rain-07.mp3?v=8" loop></audio>
+<audio id="bellSound9" src="https://noproblo.com/wp-content/uploads/2020/03/bell.mp3"></audio>
+<audio id="nightSound9" src="https://www.soundjay.com/nature/sounds/campfire-1.mp3" loop></audio>
+<audio id="rainSound9" src="https://www.soundjay.com/nature/sounds/rain-07.mp3" loop></audio>
 
 <script>
     let timeLeft = 25 * 60;
@@ -165,28 +149,34 @@
     let isMuted = false;
 
     const timerDisplay = document.getElementById('timer');
-    const statusDisplay = document.getElementById('status');
     const messageDisplay = document.getElementById('message');
     const rainLayer = document.getElementById('rain-layer');
-    const muteBtn = document.getElementById('muteBtn');
     const volumeSlider = document.getElementById('volumeSlider');
 
     const quotes = [
-        "\"It always seems impossible until it's done.\" - Nelson Mandela",
         "\"Focus on being productive instead of busy.\"",
-        "\"Do something today that your future self will thank you for.\"",
-        "\"Work hard in silence, let your success be your noise.\"",
-        "\"The only way to learn is to do.\"",
-        "\"Dream bigger. Do bigger.\"",
-        "\"Success is the sum of small efforts, repeated day in and day out.\"",
-        "\"Believe you can and you're halfway there.\""
+        "\"Success is the sum of small efforts.\"",
+        "\"Your future self will thank you.\"",
+        "\"Work hard in silence, let success be your noise.\""
     ];
 
     function changeMode(mode) {
         document.body.className = mode + '-mode';
         stopAllMusic();
-        if (mode === 'rain') { startRain(); playMusic('rainSound8'); }
-        else { stopRain(); playMusic(mode + 'Sound8'); }
+        
+        if (mode === 'morning') {
+            stopRain();
+            currentMusic = null; // Morningは音なし
+            messageDisplay.textContent = "Deep Focus in Silence... 🕯️";
+        } else if (mode === 'night') {
+            stopRain();
+            playMusic('nightSound9');
+            messageDisplay.textContent = "Cozy Fireplace Night... 🌙";
+        } else if (mode === 'rain') {
+            startRain();
+            playMusic('rainSound9');
+            messageDisplay.textContent = "Focusing in the Rain... ☔";
+        }
     }
 
     function playMusic(id) {
@@ -195,44 +185,39 @@
         currentMusic = music;
         music.muted = isMuted;
         music.volume = volumeSlider.value;
-        music.play().catch(() => {
-            console.log("Interaction required to play sound");
-        });
+        music.play().catch(() => {});
     }
 
     function stopAllMusic() {
-        ['morningSound8', 'nightSound8', 'rainSound8'].forEach(id => {
+        ['nightSound9', 'rainSound9'].forEach(id => {
             const m = document.getElementById(id);
             if (m) { m.pause(); m.currentTime = 0; }
         });
-    }
-
-    function toggleMute() {
-        isMuted = !isMuted;
-        if (currentMusic) currentMusic.muted = isMuted;
-        muteBtn.textContent = isMuted ? "🔇" : "🔊";
     }
 
     function updateVolume() {
         if (currentMusic) currentMusic.volume = volumeSlider.value;
     }
 
+    function toggleMute() {
+        isMuted = !isMuted;
+        if (currentMusic) currentMusic.muted = isMuted;
+        document.getElementById('muteBtn').textContent = isMuted ? "🔇" : "🔊";
+    }
+
     function startTimer() {
         if (timerId) return;
-        if (currentMusic) currentMusic.play(); else changeMode('morning');
-        messageDisplay.textContent = "Stay focused... 🕯️"; 
+        if (currentMusic) currentMusic.play();
         timerId = setInterval(() => {
             timeLeft--;
             updateDisplay();
             if (timeLeft <= 0) {
                 clearInterval(timerId);
                 timerId = null;
-                const bell = document.getElementById('bellSound8');
+                const bell = document.getElementById('bellSound9');
                 bell.volume = volumeSlider.value;
-                bell.muted = isMuted;
                 bell.play();
                 isFocus = !isFocus;
-                statusDisplay.textContent = isFocus ? "Focus Time" : "Break Time";
                 timeLeft = isFocus ? 25 * 60 : 5 * 60;
                 messageDisplay.textContent = quotes[Math.floor(Math.random() * quotes.length)];
                 updateDisplay();
@@ -244,7 +229,6 @@
         clearInterval(timerId);
         timerId = null;
         if (currentMusic) currentMusic.pause();
-        messageDisplay.textContent = "Paused. ☕";
     }
 
     function resetTimer() {
@@ -252,7 +236,7 @@
         isFocus = true;
         timeLeft = 25 * 60;
         updateDisplay();
-        messageDisplay.textContent = "\"Believe in yourself.\" ✨";
+        messageDisplay.textContent = "Ready to start? ✨";
     }
 
     function updateDisplay() {
@@ -265,14 +249,14 @@
         const drop = document.createElement('div');
         drop.classList.add('drop');
         drop.style.left = Math.random() * window.innerWidth + 'px';
-        drop.style.animationDuration = (Math.random() * 0.4 + 0.4) + 's';
+        drop.style.animationDuration = (Math.random() * 0.4 + 0.5) + 's';
         rainLayer.appendChild(drop);
         setTimeout(() => drop.remove(), 1000);
     }
 
     function startRain() {
         if (rainInterval) return;
-        rainInterval = setInterval(createDrop, 35);
+        rainInterval = setInterval(createDrop, 40);
     }
 
     function stopRain() {
